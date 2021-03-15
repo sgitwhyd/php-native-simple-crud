@@ -95,11 +95,16 @@ if (isset($_POST['submit-edit'])) {
                 alert('Ukuran Melebihi Batas')
                 </script>";
         }
+        // hapus gambar sebelumnya
+        unlink("img/" . $siswa['gambar']);
+
+        // format penamaan file
         $tanggal     = new DateTime();
         $format      = $tanggal->format('d-m-Y');
         $newFotoName = uniqid() . "-" . $format .= ".$path_foto";
         move_uploaded_file($tmp_foto, "img/" . $newFotoName);
 
+        // setelah lolos semua cek
         $sql = "UPDATE siswa SET nis='$nis', nama='$nama', kelas='$kelas', gambar='$newFotoName' WHERE id='$id'";
 
         $result = mysqli_query($conn, $sql);
