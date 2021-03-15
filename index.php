@@ -39,6 +39,7 @@ if ($jumlah_siswa > 0) {
         <thead>
             <tr>
                 <th scope="col">No</th>
+                <th scope="col">Foto</th>
                 <th scope="col">NIS</th>
                 <th scope="col">NAMA</th>
                 <th scope="col">KELAS</th>
@@ -52,16 +53,19 @@ if ($jumlah_siswa > 0) {
             <?php
 $no = 1;
 foreach ($result as $siswa): ?>
-            <tr>
-                <th scope="row"><?=$no++ ?></th>
-                <td><?=$siswa['nis'] ?></td>
-                <td><?=$siswa['nama'] ?></td>
-                <td><?=$siswa['kelas'] ?></td>
-                <td>
-                    <a href="delete.php?id=<?=$siswa['id'] ?>" class="btn btn-danger">Delete</a>
-                    <a href="edit.php?id=<?=$siswa['id'] ?>" class="btn btn-warning">Edit</a>
-                </td>
-            </tr>
+            <div class="d-flex align-items-center">
+                <tr>
+                    <th scope="row"><?=$no++ ?></th>
+                    <th><img src="img/<?=$siswa['gambar'] ?>" width="80px" alt=""></th>
+                    <td><?=$siswa['nis'] ?></td>
+                    <td><?=$siswa['nama'] ?></td>
+                    <td><?=$siswa['kelas'] ?></td>
+                    <td>
+                        <a href="delete.php?id=<?=$siswa['id'] ?>" class="btn btn-danger">Delete</a>
+                        <a href="edit.php?id=<?=$siswa['id'] ?>" class="btn btn-warning">Edit</a>
+                    </td>
+                </tr>
+            </div>
             <?php endforeach; ?>
         </tbody>
     </table>

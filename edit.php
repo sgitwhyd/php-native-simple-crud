@@ -25,16 +25,28 @@ foreach ($result as $siswa) {
     <div class="container">
         <div class="d-flex justify-content-center flex-column">
             <h2 class="text-center mt-5">Edit Data Siswa</h2>
-            <form action="" method="post">
+            <form action="" method="post" enctype="multipart/form-data">
                 <input type="hidden" value=<?=$siswa['id'] ?> name="id" class="form-control">
-                <label for="nis">NIS Siswa</label>
-                <input type="number" placeholder="Masukan Nis" class="form-control mb-3" value="<?=$siswa['nis'] ?>"
-                    name="nis" required>
-                <label for="nama">Nama</label>
-                <input type="text" class="form-control mb-3" id="inputNama" value="<?=$siswa['nama'] ?>" name="nama">
-                <label for="kelas">Kelas</label>
-                <input type="text" class="form-control mb-3" id="inputKelas" value="<?=$siswa['kelas'] ?>" name="kelas"
-                    placeholder="Masukan Kelas Siswa">
+                <div class="mb-3">
+                    <label for="nis">NIS Siswa</label>
+                    <input type="number" placeholder="Masukan NIS Siswa" class="form-control"
+                        value="<?=$siswa['nis'] ?>" name="nis" required>
+                </div>
+                <div class="mb-3">
+                    <label for="nama">Nama</label>
+                    <input type="text" placeholder="Masukan Nama Siswa" class="form-control" id="inputNama"
+                        value="<?=$siswa['nama'] ?>" name="nama" required>
+                </div>
+                <div class="mb-3">
+                    <label for="kelas">Kelas</label>
+                    <input type="text" class="form-control" id="inputKelas" value="<?=$siswa['kelas'] ?>" name="kelas"
+                        placeholder="Masukan Kelas Siswa">
+                </div>
+                <div class="mb-3">
+                    <input type="file" class="form-control" name="foto" id="inputGroupFile04"
+                        aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                    <img src="img/<?=$siswa['gambar'] ?>" alt="foto-siswa" width="100px" class="mt-3">
+                </div>
                 <button class="btn btn-primary" name="submit-edit">Submit</button>
                 <a href="./index.php" class="btn btn-info text-white">Kembali</a>
             </form>
@@ -50,15 +62,54 @@ if (isset($_POST['submit-edit'])) {
     $nama  = $_POST['nama'];
     $kelas = $_POST['kelas'];
 
-    $sql = "UPDATE siswa SET nis='$nis', nama='$nama', kelas='$kelas' WHERE id='$id'";
+    $foto     = $_FILES['foto']['name'];
+    $err_foto = $_FILES['foto']['error'];
+    $tmp_foto = $_FILES['foto']['tmp_name'];
 
-    $result = mysqli_query($conn, $sql);
+    if ($err_foto === 4) {
+        $sql = "UPDATE siswa SET nis='$nis', nama='$nama', kelas='$kelas' WHERE id='$id'";
 
-    if ($result) {
-        header("Location: index.php?edit=success");
+        $result = mysqli_query($conn, $sql);
+
+        if ($result) {
+            header("Location: index.php?edit=success");
+        } else {
+            echo "<script>alert('gagal edit data')</script>";
+            echo mysqli_error($conn);
+        }
+
+    }
+
+    // chek gambar
+
+    $allowedExtensi = ['jpg', 'png', 'jpeg'];
+    $path_foto      = strtolower(pathinfo($foto)['extension']);
+    if (!in_array($path_foto, $allowedExtensi)) {
+        echo "<script>
+                alert('Hanya Boleh Upload Foto')
+                </script>";
     } else {
-        echo "<script>alert('gagal edit data')</script>";
-        echo mysqli_error($conn);
+// check ukuran gambar
+        if ($size_foto > 1024) {
+            echo "<script>
+                alert('Ukuran Melebihi Batas')
+                </script>";
+        }
+        $tanggal     = new DateTime();
+        $format      = $tanggal->format('d-m-Y');
+        $newFotoName = uniqid() . "-" . $format .= ".$path_foto";
+        move_uploaded_file($tmp_foto, "img/" . $newFotoName);
+
+        $sql = "UPDATE siswa SET nis='$nis', nama='$nama', kelas='$kelas', gambar='$newFotoName' WHERE id='$id'";
+
+        $result = mysqli_query($conn, $sql);
+
+        if ($result) {
+            header("Location: index.php?edit=success");
+        } else {
+            echo "<script>alert('gagal edit data')</script>";
+            echo mysqli_error($conn);
+        }
     }
 }
 
