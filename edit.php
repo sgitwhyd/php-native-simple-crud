@@ -58,9 +58,9 @@ foreach ($result as $siswa) {
     <?php
 if (isset($_POST['submit-edit'])) {
     $id    = $_POST['id'];
-    $nis   = $_POST['nis'];
-    $nama  = $_POST['nama'];
-    $kelas = $_POST['kelas'];
+    $nis   = htmlspecialchars($_POST['nis']);
+    $nama  = htmlspecialchars($_POST['nama']);
+    $kelas = htmlspecialchars($_POST['kelas']);
 
     $foto     = $_FILES['foto']['name'];
     $err_foto = $_FILES['foto']['error'];

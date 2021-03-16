@@ -59,7 +59,7 @@ if (isset($_POST['submit-siswa'])) {
                 alert('Silahkan Pilih Foto Terlebih Dahulu')
                 </script>";
     } else {
-// check apakah yang diupload gambar
+        // check apakah yang diupload gambar
         $allowedExtensi = ['jpg', 'png', 'jpeg'];
         $path_foto      = strtolower(pathinfo($foto)['extension']);
         if (!in_array($path_foto, $allowedExtensi)) {
@@ -67,7 +67,7 @@ if (isset($_POST['submit-siswa'])) {
                 alert('Hanya Boleh Upload Foto')
                 </script>";
         } else {
-// check ukuran gambar
+            // check ukuran gambar
             if ($size_foto > 1024) {
                 echo "<script>
                 alert('Ukuran Melebihi Batas')

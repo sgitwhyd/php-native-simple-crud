@@ -1,7 +1,7 @@
 <?php
 include './include/koneksi.php';
 
-$result = mysqli_query($conn, "SELECT * FROM siswa");
+$result = mysqli_query($conn, "SELECT * FROM siswa ORDER BY id DESC");
 
 $jumlah_siswa = mysqli_num_rows($result);
 
@@ -34,8 +34,23 @@ if ($jumlah_siswa > 0) {
 
     ?>
     <a href="./tambah.php" class="btn btn-primary mb-3">Tambah Siswa</a>
-    <h4>Jumlah <?=$jumlah_siswa ?> Siswa</h4>
-    <table class="table">
+    <div class="row d-flex align-items-center">
+        <div class="col-9">
+            <h5>Jumlah <?=$jumlah_siswa ?> Siswa</h5>
+        </div>
+        <div class="col">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Cari Siswa" aria-describedby="button-addon2">
+                <button class="btn btn-outline-secondary" type="button" id="button-addon2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-search" viewBox="0 0 16 16">
+                        <path
+                            d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                    </svg></button>
+            </div>
+        </div>
+    </div>
+    <table class="table table-striped">
         <thead>
             <tr>
                 <th scope="col">No</th>
@@ -53,10 +68,10 @@ if ($jumlah_siswa > 0) {
             <?php
 $no = 1;
 foreach ($result as $siswa): ?>
-            <div class="d-flex align-items-center">
+            <div>
                 <tr>
                     <th scope="row"><?=$no++ ?></th>
-                    <th><img src="img/<?=$siswa['gambar'] ?>" width="80px" alt=""></th>
+                    <th><img src="img/<?=$siswa['gambar'] ?>" width="50" alt=""></th>
                     <td><?=$siswa['nis'] ?></td>
                     <td><?=$siswa['nama'] ?></td>
                     <td><?=$siswa['kelas'] ?></td>
