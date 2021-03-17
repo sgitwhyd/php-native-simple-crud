@@ -1,4 +1,12 @@
 <?php
+
+session_start();
+
+if (!isset($_SESSION['login'])) {
+    header("Location: login.php");
+    exit;
+}
+
 include './include/koneksi.php';
 error_reporting(0);
 $nis   = htmlspecialchars($_POST['nis']);
@@ -55,41 +63,53 @@ if (isset($_POST['submit-siswa'])) {
 
     // check apakah user upload file
     if ($err_foto === 4) {
+        $foto    = "nouser.jpg";
+        $tanggal = new DateTime();
+        $sql     = "INSERT INTO siswa
+                            VAlUES ('', '$nis', '$nama', '$kelas', '$foto')";
+
+        $result = mysqli_query($conn, $sql);
+        if ($result) {
+            header("Location: index.php?submit=success");
+        } else {
+            echo "<script>alert('submit failed')</script>";
+            echo mysqli_error($conn);
+        }
+        exit;
+
+    }
+
+    // check apakah yang diupload gambar
+    $allowedExtensi = ['jpg', 'png', 'jpeg'];
+    $path_foto      = strtolower(pathinfo($foto)['extension']);
+    if (!in_array($path_foto, $allowedExtensi)) {
         echo "<script>
-                alert('Silahkan Pilih Foto Terlebih Dahulu')
-                </script>";
-    } else {
-        // check apakah yang diupload gambar
-        $allowedExtensi = ['jpg', 'png', 'jpeg'];
-        $path_foto      = strtolower(pathinfo($foto)['extension']);
-        if (!in_array($path_foto, $allowedExtensi)) {
-            echo "<script>
                 alert('Hanya Boleh Upload Foto')
                 </script>";
-        } else {
-            // check ukuran gambar
-            if ($size_foto > 1024) {
-                echo "<script>
+    } else {
+        // check ukuran gambar
+        if ($size_foto > 1024) {
+            echo "<script>
                 alert('Ukuran Melebihi Batas')
                 </script>";
-            }
-            $tanggal     = new DateTime();
-            $format      = $tanggal->format('d-m-Y');
-            $newFotoName = uniqid() . "-" . $format .= ".$path_foto";
-            move_uploaded_file($tmp_foto, "img/" . $newFotoName);
+        }
+        $tanggal     = new DateTime();
+        $format      = $tanggal->format('d-m-Y');
+        $newFotoName = uniqid() . "-" . $format .= ".$path_foto";
+        move_uploaded_file($tmp_foto, "img/" . $newFotoName);
 
-            $sql = "INSERT INTO siswa
+        $sql = "INSERT INTO siswa
                             VAlUES ('', '$nis', '$nama', '$kelas', '$newFotoName')";
 
-            $result = mysqli_query($conn, $sql);
-            if ($result) {
-                header("Location: index.php?submit=success");
-            } else {
-                echo "<script>alert('submit failed')</script>";
-                echo mysqli_error($conn);
-            }
+        $result = mysqli_query($conn, $sql);
+        if ($result) {
+            header("Location: index.php?submit=success");
+        } else {
+            echo "<script>alert('submit failed')</script>";
+            echo mysqli_error($conn);
         }
     }
+
 }
 
 ?>

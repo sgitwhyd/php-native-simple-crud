@@ -1,5 +1,13 @@
 <?php
 
+session_start();
+
+if (!isset($_SESSION['login'])) {
+    header("Location: login.php");
+    exit;
+}
+
+
 include_once './include/koneksi.php';
 
 $id = $_GET['id'];
@@ -96,7 +104,9 @@ if (isset($_POST['submit-edit'])) {
                 </script>";
         }
         // hapus gambar sebelumnya
-        unlink("img/" . $siswa['gambar']);
+        if ($siswa['gambar'] !== 'nouser.jpg') {
+            unlink("img/" . $siswa['gambar']);
+        }
 
         // format penamaan file
         $tanggal     = new DateTime();

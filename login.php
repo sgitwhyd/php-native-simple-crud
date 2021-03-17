@@ -1,5 +1,11 @@
 <?php
 
+session_start();
+if (isset($_SESSION['login'])) {
+    header("Location: index.php");
+    exit;
+}
+
 require './include/koneksi.php';
 
 if (isset($_POST['login'])) {
@@ -12,6 +18,9 @@ if (isset($_POST['login'])) {
         // verifikasi password
         $user = mysqli_fetch_assoc($result);
         if (password_verify($password, $user['password'])) {
+
+            $_SESSION['username'] = $username;
+            $_SESSION['login']    = true;
             header("Location: index.php?login=success");
             exit;
         }
@@ -27,7 +36,7 @@ if (isset($_POST['login'])) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Login</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
 </head>
@@ -52,11 +61,7 @@ if (isset($_POST['login'])) {
                                 <label for="password">Password</label>
                                 <input type="password" class="form-control" name="password" required>
                             </div>
-                            <div class="d-flex flex-column">
-                                <button class="btn btn-primary mb-2" name="login">Submit</button>
-                                <a href="./register.php" class="btn btn-success text-white mb-2">Register</a>
-                                <a href="./login.php" class="btn btn-info text-white">Kembali</a>
-                            </div>
+                            <button class="btn btn-primary mb-2" name="login">Login</button>
                         </form>
                     </div>
                 </div>

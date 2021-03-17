@@ -1,4 +1,12 @@
 <?php
+
+session_start();
+
+if (!isset($_SESSION['login'])) {
+    header("Location: index.php");
+    exit;
+}
+
 // include database connection file
 include "./include/koneksi.php";
 
@@ -12,8 +20,9 @@ $result = mysqli_query($conn, $query);
 
 foreach ($result as $siswa) {
     // delete foto
-    unlink("img/" . $siswa['gambar']);
-
+    if ($siswa['gambar'] !== 'nouser.jpg') {
+        unlink("img/" . $siswa['gambar']);
+    }
     $result = mysqli_query($conn, "DELETE FROM siswa WHERE id='$id'");
     if ($result) {
         header("Location: index.php?delete=success");
